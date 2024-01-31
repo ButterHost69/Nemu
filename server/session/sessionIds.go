@@ -81,3 +81,15 @@ func checkIfSessionExists(db *sql.DB, sessionToken string) (bool, error) {
     return exists, err
 }
 
+func DeleteSession(db *sql.DB, sessionToken string){
+	fmt.Println("Checking If Session Exists .. ")
+    exists, err := database.CheckIfSessionIdExistsUsingSessionIdInSessionDB(db, sessionToken)
+	if err != nil {
+		fmt.Println(" > Error Occured At DeleteSession[SessionId] : ", err.Error())
+		return
+	}
+
+	if exists {
+		database.DeleteSessionFromSessionTokenTable(db, sessionToken)
+	}
+}

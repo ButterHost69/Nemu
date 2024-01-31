@@ -18,7 +18,11 @@
 
         <div class="grow"></div>
         
-        <button class="border-2 pl-3 pr-3 pt-1 pb-1 mr-20 bg-rose-200 font-bold">
+        <button hx-post="/app/signout"
+                hx-trigger="click"
+                hx-target="#mainScreen"
+                hx-swap="outerHTML"
+            class="border-2 pl-3 pr-3 pt-1 pb-1 mr-20 bg-rose-200 font-bold">
             Sign Out
         </button>
     </div>

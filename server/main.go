@@ -133,6 +133,9 @@ func main() {
 	r.POST("/login", func(c *gin.Context) {
 		loginUser(c, db)
 	})
+	r.POST("/app/signout", func(c *gin.Context) {
+		routes.AppSignout(c, db)
+	})
 
 	r.Run("localhost:8000")
 }
