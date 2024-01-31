@@ -24,7 +24,19 @@ type Users struct {
 }
 
 
-func defaultRoute(c *gin.Context) {
+func defaultRoute(db *sql.DB, c *gin.Context) {
+	sessionToken, serr := c.Cookie("user-token")
+	if serr == nil {
+		// Check if Token is found by checking if err is null
+		fmt.Println("Token Present ??") 
+		if  exists, err := sessions.VerifySessionToken(db, sessionToken); err == nil && exists{
+			fmt.Println("Redirecting to Main Page As Token Exists")
+			templ := template.Must(template.ParseFiles("templates/app.html"))
+			c.Status(205)
+			templ.Execute(c.Writer, nil)
+		}
+	}
+
 	tmpl := template.Must(template.ParseFiles("index.html"))
 	tmpl.Execute(c.Writer, nil)
 }
@@ -64,8 +76,8 @@ func loginUser(c *gin.Context, db *sql.DB){
 	if serr == nil {
 		// Check if Token is found by checking if err is null
 		fmt.Println("Token Present ??") 
-		if sessions.VerifySessionToken(db, sessionToken){
-			fmt.Print("Redirecting to Main Page As Token Exists")
+		if  exists, err := sessions.VerifySessionToken(db, sessionToken); err == nil && exists{
+			fmt.Print("Redirecting to Main Page As Token Exists") 
 			templ := template.Must(template.ParseFiles("templates/app.html"))
 			templ.Execute(c.Writer, nil)
 		}
@@ -108,7 +120,9 @@ func main() {
 	//r.Use(static.Serve("/",static.LocalFile("/js/", true)))
 	r.Static("/js","./js")
 
-	r.GET("/", defaultRoute)
+	r.GET("/", func(ctx *gin.Context) {
+		defaultRoute(db, ctx)
+	})
 	r.GET("/login", showLoginPage)
 	r.GET("/app", routes.AppHomeRoute)
 	

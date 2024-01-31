@@ -2,6 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
+	"strings"
+
+	// "go/printer"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -56,22 +60,25 @@ func CheckIfUserExistsUsingUsernameInSessionDB(db *sql.DB, username string) bool
 	}
 }
 
-func CheckIfSessionIdExistsUsingSessionIdInSessionDB(db *sql.DB, sessionToken string) bool {
-	query := "SELECT * FROM session_token_table WHERE session_token=?"
-	stmt, err := db.Prepare(query)
+func CheckIfSessionIdExistsUsingSessionIdInSessionDB(db *sql.DB, sessionToken string) (bool, error) {
+    query := "SELECT * FROM session_token_table WHERE session_token=?"
+    stmt, err := db.Prepare(query)
+    if err != nil {
+        fmt.Println(" > Error Occured In Prepared Statement for Func : CheckIfSessionIdExistsUsingSessionIdInSessionDB()")
+        return false, err
+    }
+    defer stmt.Close()
 
-	if err != nil {
-		return false
-	}
-	defer stmt.Close()
+    sessionToken = strings.TrimSpace(sessionToken)
+    var dbSessionToken, dbUsername string
+    errs := stmt.QueryRow(sessionToken).Scan(&dbSessionToken, &dbUsername)
 
-	errs := stmt.QueryRow(sessionToken).Scan(&sessionToken)
+    if errs != nil {
+        fmt.Println(" > Session Token For ")
+        return false, errs
+    }
 
-	if errs != nil {
-		return false
-	} else {
-		return true
-	}
+    return true, nil
 }
 
 func CheckIfUserExists(db *sql.DB, username string, password string) bool {

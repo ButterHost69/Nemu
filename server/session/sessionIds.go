@@ -8,8 +8,15 @@ import (
 	"fmt"
 )
 
-func VerifySessionToken(db *sql.DB, token string)(bool){
-	return checkIfSessionExists(db, token)
+func VerifySessionToken(db *sql.DB, sessionToken string) (bool, error) {
+    fmt.Println("Verifying ....")
+    fmt.Println("This is the token " + sessionToken)
+    exists, err := checkIfSessionExists(db, sessionToken)
+    if err != nil {
+        // Handle or log the error at this level
+        fmt.Println("Error verifying session:", err)
+    }
+    return exists, err
 }
 
 func CreateSessionTokens(db *sql.DB, userName string)(bool, string){
@@ -29,7 +36,8 @@ func CreateSessionTokens(db *sql.DB, userName string)(bool, string){
 	}
 
 	// If checkIfSessionExists return true -> than Session Id is a Duplicate
-	if checkIfSessionExists(db, token){
+	exists, err := checkIfSessionExists(db, token)
+	if err != nil && exists{
 		fmt.Println(" > Error In Check If Session Exists Token : ", err.Error())
 		return false, ""
 	}
@@ -67,7 +75,9 @@ func checkIfUserExists(db *sql.DB, username string)(bool){
 	return database.CheckIfUserExistsUsingUsernameInSessionDB(db, username)
 }
 
-func checkIfSessionExists(db *sql.DB, sessionId string)(bool){
-	return database.CheckIfSessionIdExistsUsingSessionIdInSessionDB(db, sessionId)
+func checkIfSessionExists(db *sql.DB, sessionToken string) (bool, error) {
+    fmt.Println("Checking If Session Exists .. ")
+    exists, err := database.CheckIfSessionIdExistsUsingSessionIdInSessionDB(db, sessionToken)
+    return exists, err
 }
 
