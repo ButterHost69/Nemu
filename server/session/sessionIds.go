@@ -93,3 +93,8 @@ func DeleteSession(db *sql.DB, sessionToken string){
 		database.DeleteSessionFromSessionTokenTable(db, sessionToken)
 	}
 }
+
+func GetUsernameFromSessionToken(db *sql.DB, sessionToken string) (string, error){
+	username, err := database.ReturnUsernameUsingSessionTokenFromSessionTable(db, sessionToken)
+	return username, err
+}

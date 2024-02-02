@@ -65,7 +65,10 @@
         </div>
     </div>
 
-    <div class="flex justify-center items-center fixed bottom-0 right-0 h-16 w-16 m-12 rounded-full border-2 bg-fuchsia-100">
-        ➕
+    <div class="flex justify-center fixed bottom-0 right-0 w-full  h-24 pb-3">
+        <form hx-post="/app/create/post" hx-target="#posts-screen" hx-swap="afterbegin" class="flex items-center h-full w-full ml-72">
+            <textarea name="post-content" type="text" class="border-2 grow pl-5 pr-2 pt-1 resize-none" required></textarea>
+            <input class="h-14 w-14 m-12 rounded-full border-2 bg-fuchsia-100" type="submit" value="➕">
+        </form>
     </div>
 </div>

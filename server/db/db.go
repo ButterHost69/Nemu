@@ -136,3 +136,24 @@ func DeleteSessionFromSessionTokenTable(db *sql.DB, sessionToken string){
 	fmt.Println(" Session Deleted > User has logged out")
 	return
 }
+
+func ReturnUsernameUsingSessionTokenFromSessionTable(db *sql.DB, sessionToken string) (string, error) {
+    query := "SELECT * FROM session_token_table WHERE session_token=?"
+    stmt, err := db.Prepare(query)
+    if err != nil {
+        fmt.Println(" > Error Occured In Prepared Statement for Func : CheckIfSessionIdExistsUsingSessionIdInSessionDB()")
+        return "", err
+    }
+    defer stmt.Close()
+
+    sessionToken = strings.TrimSpace(sessionToken)
+    var dbSessionToken, dbUsername string
+    errs := stmt.QueryRow(sessionToken).Scan(&dbUsername, &dbSessionToken)
+
+    if errs != nil {
+        fmt.Println(" > Session Token For ")
+        return "", errs
+    }
+
+    return dbUsername, nil
+}

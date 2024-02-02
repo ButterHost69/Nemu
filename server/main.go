@@ -65,7 +65,7 @@ func createUser(c *gin.Context, db *sql.DB){
 			} 
 		} else {
 			fmt.Println(" New User Registered ")
-			c.String(http.StatusOK, "<div id	='resultMessage' class='flex bg-green-200 border-2 pl-5 pr-5'>😊  Registered Successfully </div>")
+			c.String(http.StatusOK, "<div id='resultMessage' class='flex bg-green-200 border-2 pl-5 pr-5'>😊  Registered Successfully </div>")
 		}	
 }
 
@@ -111,11 +111,21 @@ func main() {
 	fmt.Println("  !!! Hello World !!! ")
 
 	r := gin.Default()
+
+	// Init MYSQL Database
 	db, err := database.InitDB()
 	if err != nil {
 		fmt.Println("Error > ", err.Error())
 		return
 	}
+	
+	// Init MongoDB Database
+	mdb, merr := database.InitMongoDB()
+	if merr != nil {
+		fmt.Println("Error > ", err.Error())
+		return 
+	}
+	
 
 	//r.Use(static.Serve("/",static.LocalFile("/js/", true)))
 	r.Static("/js","./js")
@@ -135,6 +145,11 @@ func main() {
 	})
 	r.POST("/app/signout", func(c *gin.Context) {
 		routes.AppSignout(c, db)
+	})
+
+
+	r.POST("/app/create/post", func(ctx *gin.Context) {
+		routes.CreatePost(ctx, mdb, db)
 	})
 
 	r.Run("localhost:8000")
