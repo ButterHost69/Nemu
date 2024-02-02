@@ -16,6 +16,18 @@ import (
 	database "example/one-page/server/db"
 )
 
+type Comment struct {
+	CommentData string
+	CommentUsername string
+}
+
+type Post struct{
+	Username string
+	Data string
+	
+	Comments []Comment
+}
+
 func AppHomeRoute(c *gin.Context){
 		
 }
@@ -68,5 +80,27 @@ func CreatePost(c *gin.Context, mdb *mongo.Client, db *sql.DB){
 		return
 	}
 
-	c.String(200, "<p> New Post Created </p>")
+	currPost := Post {
+		Username: username,
+		Data: content,
+
+		// Temp Delete Later :
+		// Comments: []Comment{
+		// 	{
+		// 		CommentData : "Comment - 1",
+		// 		CommentUsername : "Well Well",
+		// 	},
+		// },
+	}
+
+	tmplt, terr := template.ParseFiles("templates/posts.html")
+	if terr != nil {
+		fmt.Println("Error Occured in Parse HTML template [Create Post] : ")
+		fmt.Println(terr.Error())
+		c.String(200, "<p> Unable to Display Post </p>")
+		return
+	}
+
+	tmplt.Execute(c.Writer, currPost)
+	// c.String(200, "<p> New Post Created </p>")
 }
