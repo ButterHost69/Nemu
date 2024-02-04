@@ -1,4 +1,7 @@
-2. Infinite scroll posts [ Doesnt seem to work ... Problem With HTML ] 
-4. Learn Mongo
-5. Solve the Posts div
+1. Add Date to each posts [Created at]
+2. Load Post Sorted Using Created at
+3. Add Comment Feature to Posts
+4. Add Categories
+5. Learn Mongo
+
 6. Responsive Ui || Maybe support Mobile    
