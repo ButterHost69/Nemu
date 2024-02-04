@@ -1,41 +1,28 @@
 package routes
 
 import (
-	
 	"database/sql"
 	"example/one-page/server/session"
 	"fmt"
 	"html/template"
-	
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	
+
 	"go.mongodb.org/mongo-driver/mongo"
 
-
 	database "example/one-page/server/db"
+	models "example/one-page/server/models"
 )
 
-type Comment struct {
-	CommentData string
-	CommentUsername string
+func AppHomeRoute(c *gin.Context) {
+
 }
 
-type Post struct{
-	Username string
-	Data string
-	
-	Comments []Comment
-}
-
-func AppHomeRoute(c *gin.Context){
-		
-}
-
-func AppSignout(c *gin.Context, db *sql.DB){
+func AppSignout(c *gin.Context, db *sql.DB) {
 	token, err := c.Cookie("user-token")
 	if err != nil {
-		fmt.Println(" > Error Occured At SignOut : " , err.Error())
+		fmt.Println(" > Error Occured At SignOut : ", err.Error())
 		return
 	}
 	session.DeleteSession(db, token)
@@ -43,16 +30,16 @@ func AppSignout(c *gin.Context, db *sql.DB){
 	tmpl.Execute(c.Writer, nil)
 }
 
-func CreatePost(c *gin.Context, mdb *mongo.Client, db *sql.DB){
+func CreatePost(c *gin.Context, mdb *mongo.Client, db *sql.DB) {
 	postCollection := mdb.Database("nemu").Collection("posts")
-	
+
 	user_token, err := c.Cookie("user-token")
-	if err!=nil {
+	if err != nil {
 		fmt.Println("Error Occured in Getting Session-Token [Create Post] : ")
 		fmt.Println(err.Error())
 		c.String(200, "<p> Unable to Create Post </p>")
 
-		return	
+		return
 	}
 
 	username, derr := session.GetUsernameFromSessionToken(db, user_token)
@@ -61,28 +48,28 @@ func CreatePost(c *gin.Context, mdb *mongo.Client, db *sql.DB){
 		fmt.Println(derr.Error())
 		c.String(200, "<p> Unable to Create Post </p>")
 
-		return	
+		return
 	}
 
 	content := c.PostForm("post-content")
-	if content == ""{
+	if content == "" {
 		fmt.Println("Could Not Retrieve any Content From the Form [Create Post] ")
 		c.String(200, "<p> Unable to Create Post </p>")
 
-		return	
+		return
 	}
 
 	merr := database.InsertPostInMongoDB(postCollection, username, content)
-	if merr != nil{
+	if merr != nil {
 		fmt.Println("Error Occured in Inserting Post in DB [Create Post] : ")
 		fmt.Println(merr.Error())
 		c.String(200, "<p> Unable to Create Post </p>")
 		return
 	}
 
-	currPost := Post {
+	currPost := models.Post{
 		Username: username,
-		Data: content,
+		Data:     content,
 
 		// Temp Delete Later :
 		// Comments: []Comment{
@@ -103,4 +90,38 @@ func CreatePost(c *gin.Context, mdb *mongo.Client, db *sql.DB){
 
 	tmplt.Execute(c.Writer, currPost)
 	// c.String(200, "<p> New Post Created </p>")
+}
+
+func LoadPages(c *gin.Context, mdb *mongo.Client) {
+
+	postsCollection := mdb.Database("nemu").Collection("posts")
+	strpageNumber := c.Param("page")
+
+	pageNumber, err := strconv.Atoi(strpageNumber)
+	if err != nil {
+		// Handle the error if the conversion fails
+		c.String(200, "Invalid ID")
+		return
+	}
+
+	// This func Returns models.Post[]
+	posts := database.GetPostsFromMongoDB(postsCollection, pageNumber*10, 10)
+
+	type PageData struct {
+		PageNumber int
+		PostsSet   []models.Post
+	}
+
+	tmpl, _ := template.ParseFiles("templates/loadPosts.html")
+
+	data := PageData{
+		PageNumber: pageNumber + 1,
+		PostsSet:   posts,
+	}
+	if err := tmpl.Execute(c.Writer, data); err != nil {
+		// Handle the error, maybe log it or return an error response.
+		fmt.Println("Error executing template:", err)
+		return
+	}
+
 }

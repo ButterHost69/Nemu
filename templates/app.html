@@ -42,7 +42,7 @@
         <!-- Posts -->
         <!-- absolute bottom-0 right-0 -->
         <div id="posts-screen"
-        class="overflow-x-hidden  w-5/6 h-screen ml-72 flex flex-col items-center pt-28 ">
+        class="overflow-x-hidden overflow-y-scroll w-5/6 h-screen ml-72 flex flex-col items-center pt-28 pb-96 mb-32">
            <!-- Example Post -->
             <div 
             class="flex flex-col border-2 ml-12 mr-12 mt-2 mb-2 p-4 bg-zinc-100">
@@ -61,6 +61,16 @@
                 </div>
             </div>
 
+            <div hx-get="/app/posts/0"
+                 hx-trigger="revealed"
+                 hx-swap="afterend"
+                 hx-target="this"
+                 >
+
+            </div>
+
+            <div class="mt-96">  
+            </div>
 
         </div>
     </div>
