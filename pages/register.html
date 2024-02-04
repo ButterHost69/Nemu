@@ -1,23 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
-    
-
-    <script src="js/login.js"></script>
-
-    <title> One-Page </title>
-</head>
-
-<body id="#body" hx-ext="response-targets">
-    <div class="h-screen flex flex-col justify-center items-center space-y-6" 
+<div class="h-screen flex flex-col justify-center items-center space-y-6" 
         id="registerDiv">
         <h1>😎 Register Here 😎</h1>
 
@@ -25,7 +6,7 @@
         <!-- class="bg-red-300 border-2 pl-5 pr-5" -->
         <div id="resultMessage"></div>
 
-        <form hx-post="/" hx-target="#resultMessage" hx-target-205="#registerDiv">
+        <form hx-post="/register" hx-target="#resultMessage" hx-target-205="#registerDiv">
         <div class="flex flex-col space-y-2">
 
             <input class="border-2 rounded-lg pl-2 pb-1" 
@@ -52,5 +33,3 @@
         </div>
     </form>
     </div>
-</body>
-</html>

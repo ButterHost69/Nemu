@@ -1,8 +1,6 @@
 <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
 <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
-<script src="https://cdn.tailwindcss.com"></script> 
-
 <!-- Main Screen [can be used to swap the entire damn thing] -->
 <div class="h-screen flex flex-col  items-center" id="mainScreen">
     <!-- Heading div [ will contain logo, name and logout ] -->
@@ -18,7 +16,7 @@
 
         <div class="grow"></div>
         
-        <button hx-post="/app/signout"
+        <button hx-post="/signout"
                 hx-trigger="click"
                 hx-target="#mainScreen"
                 hx-swap="outerHTML"
@@ -76,7 +74,7 @@
     </div>
 
     <div class="flex justify-center fixed bottom-0 right-0 w-full  h-24 pb-3">
-        <form hx-post="/app/create/post" hx-target="#posts-screen" hx-swap="afterbegin" class="flex items-center h-full w-full ml-72">
+        <form hx-post="/app/post" hx-target="#posts-screen" hx-swap="afterbegin" class="flex items-center h-full w-full ml-72">
             <textarea name="post-content" type="text" class="border-2 grow pl-5 pr-2 pt-1 resize-none" required></textarea>
             <input class="h-14 w-14 m-12 rounded-full border-2 bg-fuchsia-100" type="submit" value="➕">
         </form>

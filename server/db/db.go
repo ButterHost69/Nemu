@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	// "go/printer"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -43,7 +41,7 @@ func CreateUser(db *sql.DB, username string, password string) error {
 }
 
 func CheckIfUserExistsUsingUsernameInSessionDB(db *sql.DB, username string) bool {
-	query := "SELECT * FROM session_token_table WHERE username=?"
+	query := "SELECT username FROM session_token_table WHERE username=?"
 	stmt, err := db.Prepare(query)
 
 	if err != nil {
@@ -71,10 +69,11 @@ func CheckIfSessionIdExistsUsingSessionIdInSessionDB(db *sql.DB, sessionToken st
 
     sessionToken = strings.TrimSpace(sessionToken)
     var dbSessionToken, dbUsername string
-    errs := stmt.QueryRow(sessionToken).Scan(&dbSessionToken, &dbUsername)
+    errs := stmt.QueryRow(sessionToken).Scan(&dbUsername, &dbSessionToken)
 
     if errs != nil {
-        fmt.Println(" > Session Token For ")
+        fmt.Println(" > Error Occured In CheckIfSessionIdExistsUsingSessionIdInSessionDB() ")
+        fmt.Println(" > No Such Token : " , sessionToken)
         return false, errs
     }
 
@@ -110,6 +109,8 @@ func CreateSession(db *sql.DB, username string, token string) error {
 
 	_, errs := stmt.Exec(username, token)
 	if errs != nil {
+		fmt.Println(" > Error Occured at CreateSession()")
+		fmt.Println(err.Error())
 		return errs
 	}
 
@@ -117,7 +118,7 @@ func CreateSession(db *sql.DB, username string, token string) error {
 }
 
 
-func DeleteSessionFromSessionTokenTable(db *sql.DB, sessionToken string){
+func DeleteSessionFromSessionTokenTableUsingSessionID(db *sql.DB, sessionToken string){
 	query := "DELETE FROM session_token_table WHERE session_token=?"
 	stmt, err := db.Prepare(query)
 
@@ -151,9 +152,32 @@ func ReturnUsernameUsingSessionTokenFromSessionTable(db *sql.DB, sessionToken st
     errs := stmt.QueryRow(sessionToken).Scan(&dbUsername, &dbSessionToken)
 
     if errs != nil {
-        fmt.Println(" > Session Token For ")
+        fmt.Println(" > Error Occured at ReturnUsernameUsingSessionTokenFromSessionTable()")
+		fmt.Println(" > No Such Token : ", sessionToken)
+		fmt.Println(err.Error())
+
         return "", errs
     }
 
     return dbUsername, nil
+}
+
+func DeleteSessionFromSessionTokenTableUsingUsername(db *sql.DB, username string){
+	query := "DELETE FROM session_token_table WHERE username=?"
+	stmt, err := db.Prepare(query)
+
+	if err != nil {
+		fmt.Println(" Error Occured At Statement Creation at DeleteSession[db] : \n  ", err.Error())
+		return 
+	}
+	defer stmt.Close()
+
+	_, errs := stmt.Exec(username)
+	if errs != nil {
+		fmt.Println(" Error Occured At Statement Creation at DeleteSession[db] : \n  ", errs.Error())
+		return 
+	}
+	
+	fmt.Println(" Session Deleted > User has logged out")
+	return
 }

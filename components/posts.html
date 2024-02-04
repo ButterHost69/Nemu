@@ -1,6 +1,4 @@
-<script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Example Post -->
+{{ define "postsComponent" }}
 <div class="flex flex-col w-full">
     <div 
     class="flex flex-col border-2 ml-12 mr-12 mt-4 mb-2 p-4 bg-zinc-100">
@@ -23,14 +21,8 @@
     </div>
     
     {{ range .Comments }}
-    <div class="flex flex-col w-fit ml-32 border-2 p-4 mr-12 mt-2 mb-2 bg-zinc-100">
-        <p>
-            {{ .CommentData }}
-        </p>
-        <p>
-            ~ {{ .CommentUsername }}
-        </p>
-    </div>
+        {{ template "commentsComponent" }}
     {{ end }}
 
 </div>
+{{ end }}
