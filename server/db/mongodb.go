@@ -41,8 +41,10 @@ func InsertPostInMongoDB(collection *mongo.Collection, username string, content 
 	return nil
 }
 
-func GetPostsFromMongoDB(collection *mongo.Collection, offset int, limit int) []models.Post {
+func GetPostsFromMongoDB(collection *mongo.Collection, offset int, limit int) ([]models.Post, bool) {
 	var resultSet []models.Post
+	var emptyList bool
+	emptyList = false
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
@@ -55,7 +57,7 @@ func GetPostsFromMongoDB(collection *mongo.Collection, offset int, limit int) []
 	if err != nil {
 		fmt.Println(" Error Occured at Getting Cursor [GetPostsFromMongoDB] : ")
 		fmt.Println(err.Error())
-		return nil
+		return nil, emptyList
 	}
 	defer cursor.Close(ctx)
 
@@ -86,5 +88,10 @@ func GetPostsFromMongoDB(collection *mongo.Collection, offset int, limit int) []
 		fmt.Println(err.Error())
 	}
 
-	return resultSet
+	if len(resultSet) == 0 {
+		// fmt.Println(" > Last Post Reached ")
+		emptyList = true
+	}
+
+	return resultSet, emptyList
 }

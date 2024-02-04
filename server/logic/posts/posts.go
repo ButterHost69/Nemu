@@ -57,7 +57,7 @@ func CreatePost(mdb *mongo.Client, db *sql.DB, user_token string, content string
 	return currPost, nil
 }
 
-func GetPosts(mdb *mongo.Client, pageNumber int) []models.Post{
+func GetPosts(mdb *mongo.Client, pageNumber int) ([]models.Post, bool){
 
 	postsCollection := mdb.Database("nemu").Collection("posts")
 	

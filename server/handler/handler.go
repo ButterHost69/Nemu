@@ -2,11 +2,11 @@ package handler
 
 import (
 	"database/sql"
-	"strconv"
 	"fmt"
 	"html/template"
 	"net/http"
-	
+	"strconv"
+
 	auth "example/one-page/server/logic/auth"
 	"example/one-page/server/logic/posts"
 	"example/one-page/server/models"
@@ -103,7 +103,6 @@ func PostSignOut(c *gin.Context, db *sql.DB) {
 
 	auth.SignOutUser(db, token)
 
-	
 	c.SetCookie("user-token", "", -1, "/", "localhost", false, true) //Deletes Cookie user-token
 	tmpl := template.Must(template.ParseFiles("pages/index.html"))
 	tmpl.Execute(c.Writer, nil)
@@ -145,7 +144,7 @@ func PostAppPost(c *gin.Context, mdb *mongo.Client, db *sql.DB) {
 	return
 }
 
-func LoadPages(c *gin.Context, mdb *mongo.Client){
+func LoadPages(c *gin.Context, mdb *mongo.Client) {
 	strpageNumber := c.Param("page")
 
 	pageNumber, err := strconv.Atoi(strpageNumber)
@@ -155,14 +154,15 @@ func LoadPages(c *gin.Context, mdb *mongo.Client){
 		return
 	}
 
-	posts := posts.GetPosts(mdb, pageNumber)
+	posts, ifEmptyPost := posts.GetPosts(mdb, pageNumber)
 
 	type PageData struct {
 		PageNumber int
 		PostsSet   []models.Post
+		EmptyPost  bool
 	}
 
-	tmpl, tempErr := template.ParseFiles("components/loadPosts.html", "components/posts.html","components/comments.html")
+	tmpl, tempErr := template.ParseFiles("components/loadPosts.html", "components/posts.html", "components/comments.html")
 	if tempErr != nil {
 		fmt.Println("Error executing Parsing Templates : ", err)
 		// return
@@ -171,10 +171,11 @@ func LoadPages(c *gin.Context, mdb *mongo.Client){
 	data := PageData{
 		PageNumber: pageNumber + 1,
 		PostsSet:   posts,
+		EmptyPost:  ifEmptyPost,
 	}
-	if err := tmpl.ExecuteTemplate(c.Writer, "loadPosts",data); err != nil {
+	if err := tmpl.ExecuteTemplate(c.Writer, "loadPosts", data); err != nil {
 		// Handle the error, maybe log it or return an error response.
 		fmt.Println("Error executing template:", err)
 		return
-	}	
+	}
 }
