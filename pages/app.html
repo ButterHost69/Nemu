@@ -1,0 +1,82 @@
+<script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+<!-- Main Screen [can be used to swap the entire damn thing] -->
+<div class="h-screen flex flex-col  items-center" id="mainScreen">
+    <!-- Heading div [ will contain logo, name and logout ] -->
+    <!-- z-20  -->
+    <div 
+    class="fixed flex flex-row w-screen h-16  items-center border-2">
+        <div class="flex flex-row ml-20">
+            <p class="text-2xl font-mono font-bold">
+                🐦
+                Nemu
+            </p>
+        </div>
+
+        <div class="grow"></div>
+        
+        <button hx-post="/signout"
+                hx-trigger="click"
+                hx-target="#mainScreen"
+                hx-swap="outerHTML"
+            class="border-2 pl-3 pr-3 pt-1 pb-1 mr-20 bg-rose-200 font-bold">
+            Sign Out
+        </button>
+    </div>
+    <!-- Content [ will contain different post and filters { filter / categories } ]  -->
+    <div class="w-screen h-screen flex flex-row ">
+        <!-- Filter / Categories -->
+        <!-- z-20 fixed -->
+        <div class="fixed flex flex-col items-center space-y-5 w-1/6 pt-28 font-bold font-mono h-screen border-2 ">
+            <p> Random </p>
+            <p> Anime </p>
+            <p> Technology </p>
+            <p> Sports </p>
+            <p> Video Games </p>
+            <p> Philosphy </p>
+            <div class="grow"></div>
+        </div>
+        <!-- Posts -->
+        <!-- absolute bottom-0 right-0 -->
+        <div id="posts-screen"
+        class="overflow-x-hidden overflow-y-scroll w-5/6 h-screen ml-72 flex flex-col items-center pt-28 pb-96 mb-32">
+           <!-- Example Post -->
+            <div 
+            class="flex flex-col border-2 ml-12 mr-12 mt-2 mb-2 p-4 bg-zinc-100">
+                <p>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                </p>
+                <div class="w-full flex mt-3">
+                    <p>
+                        ~ Username
+                    </p>
+                    <div class="grow"></div>
+                    <button
+                    class="border-2 pt-1 pb-1 pl-3 pr-3">
+                        ➕ Comment
+                    </button>
+                </div>
+            </div>
+
+            <div hx-get="/app/posts/0"
+                 hx-trigger="revealed"
+                 hx-swap="afterend"
+                 hx-target="this"
+                 >
+
+            </div>
+
+            <div class="mt-96">  
+            </div>
+
+        </div>
+    </div>
+
+    <div class="flex justify-center fixed bottom-0 right-0 w-full  h-24 pb-3">
+        <form hx-post="/app/post" hx-target="#posts-screen" hx-swap="afterbegin" class="flex items-center h-full w-full ml-72">
+            <textarea name="post-content" type="text" class="border-2 grow pl-5 pr-2 pt-1 resize-none" required></textarea>
+            <input class="h-14 w-14 m-12 rounded-full border-2 bg-fuchsia-100" type="submit" value="➕">
+        </form>
+    </div>
+</div>

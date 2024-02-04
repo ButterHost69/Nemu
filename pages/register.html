@@ -1,0 +1,35 @@
+<div class="h-screen flex flex-col justify-center items-center space-y-6" 
+        id="registerDiv">
+        <h1>😎 Register Here 😎</h1>
+
+        <!-- Error Message Here  -->
+        <!-- class="bg-red-300 border-2 pl-5 pr-5" -->
+        <div id="resultMessage"></div>
+
+        <form hx-post="/register" hx-target="#resultMessage" hx-target-205="#registerDiv">
+        <div class="flex flex-col space-y-2">
+
+            <input class="border-2 rounded-lg pl-2 pb-1" 
+                type="text" id="username" name="username" 
+                placeholder="username" required>
+
+            <input class="border-2 rounded-lg pl-2 pb-1" 
+                type="password" id="password" name="password"
+                placeholder="password" required>
+
+            <div class="space-x-2">
+                <input class="border-2 pl-3 pr-3"
+                    type="submit" value="Register"/>
+                    
+
+                <button hx-get="/login" 
+                    hx-trigger="click" 
+                    hx-target="#registerDiv" 
+                    hx-swap="outerHTML"
+                    class="border-2 pl-3 pr-3 border-green-400">
+                    Login Here ->
+                </button>
+            </div>
+        </div>
+    </form>
+    </div>

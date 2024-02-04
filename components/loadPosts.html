@@ -1,0 +1,14 @@
+{{ define "loadPosts" }}
+    {{ range .PostsSet }}
+        {{ template "postsComponent" . }}
+    {{ end }}
+    
+    <div hx-get="/app/posts/{{ .PageNumber }}"
+     hx-trigger="revealed"
+     hx-swap="afterend"
+     hx-target="this"
+     >
+    
+    </div>
+
+{{ end }}
