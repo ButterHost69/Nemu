@@ -2,14 +2,14 @@ package handler
 
 import (
 	"database/sql"
-	auth "example/one-page/server/logic/auth"
-	"example/one-page/server/logic/posts"
-	"example/one-page/server/models"
 	"strconv"
-
 	"fmt"
 	"html/template"
 	"net/http"
+	
+	auth "example/one-page/server/logic/auth"
+	"example/one-page/server/logic/posts"
+	"example/one-page/server/models"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"

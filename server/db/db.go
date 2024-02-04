@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	// "go/printer"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 
