@@ -7,7 +7,7 @@
         </p>
         <div class="w-full flex mt-3">
             <p>
-                ~ {{ .Username }}  
+                ~ {{ .Username }}  |  {{ if .CreatedAt }}  <p class="text-gray-400 ml-2"> {{ .CreatedAt }} </p>{{ end }}
             </p>
             <div class="grow"></div>
             <button hx-get="/widgets/commentInputBox"
