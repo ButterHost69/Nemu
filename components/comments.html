@@ -3,8 +3,8 @@
     <p>
         {{ .CommentData }}
     </p>
-    <p>
-        ~ {{ .CommentUsername }} | {{ .CreatedAt }}
-    </p>
+    <div class="flex flex-none items-center">
+        ~ {{ .CommentUsername }} | <p class="text-gray-400 text-sm ml-2">  {{ .CreatedAt }} </p> 
+    </div>
 </div>
 {{ end }}

@@ -24,7 +24,7 @@
     
     <div id="comments_{{ .ObjectID }}">
         {{ range .Comments }}
-            {{ template "commentsComponent" }}
+            {{ template "commentsComponent" .}}
         {{ end }}
     </div>
 

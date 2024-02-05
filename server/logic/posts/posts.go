@@ -103,7 +103,7 @@ func GetPosts(mdb *mongo.Client, pageNumber int) ([]models.Post, bool){
 	
 
 	// This func Returns models.Post[]
-	return database.GetPostsFromMongoDB(postsCollection, pageNumber*10, 10)
+	return database.BetterGetPostsFromMongoDB(postsCollection, pageNumber*10, 10)
 
 }
 
