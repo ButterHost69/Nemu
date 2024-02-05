@@ -116,13 +116,12 @@ func PostAppPost(c *gin.Context, mdb *mongo.Client, db *sql.DB) {
 		fmt.Println(err.Error())
 
 		c.String(200, "<p> Unable to Create Post </p>")
-
 	}
 
 	content := c.PostForm("post-content")
 	if content == "" {
 		fmt.Println("Could Not Retrieve any Content From the Form [Create Post] ")
-		c.String(200, "<p> Unable to Create Post </p>")
+		// c.String(200, "<p> Unable to Create Post </p>")
 		return
 	}
 
@@ -178,4 +177,66 @@ func LoadPages(c *gin.Context, mdb *mongo.Client) {
 		fmt.Println("Error executing template:", err)
 		return
 	}
+}
+
+func GetCommentInputBox(c *gin.Context, mdb *mongo.Client){
+	objectID := c.Param("postID")
+	usernameOfOP := posts.GetUsernameThroughObjectID(mdb, objectID)
+
+	fmt.Println(objectID)
+	tmpl, err := template.ParseFiles("components/inputBox.html")
+	if err != nil{
+		fmt.Println(" > Error in Rendering Comment Input Box ")
+		fmt.Println(err.Error())
+	}
+
+	data := struct{
+		ObjectID	string
+		OPUsername 	string
+	}{
+		ObjectID: objectID,
+		OPUsername: usernameOfOP,
+	}
+	errs := tmpl.ExecuteTemplate(c.Writer,"inputCommentBox", data)
+	if errs != nil{
+		fmt.Println(" > Error in Rendering Comment Input Box ")
+		fmt.Println(errs.Error())
+	}	
+	
+	return
+}
+
+func PostComment(c *gin.Context, mdb *mongo.Client, db *sql.DB) {
+	
+	user_token, err := c.Cookie("user-token")
+	if err != nil {
+		fmt.Println("Error Occured in Getting Session-Token [Create Post] : ")
+		fmt.Println(err.Error())
+
+		c.String(200, "<p> Unable to Create Post </p>")
+	}
+
+	objectID := c.Param("postId")
+	commentContent := c.PostForm("post-content")
+	if commentContent == "" {
+		fmt.Println(" > No Content in Comment Post ")
+	}
+
+	commentData, err := posts.CreateComment(mdb, db, user_token, objectID, commentContent)
+
+	if err != nil {
+		c.String(200, "<p> Unable to Create Post </p>")
+		return
+	}
+
+	tmplt, terr := template.ParseFiles("components/comments.html", "components/posts.html")
+	if terr != nil {
+		fmt.Println("Error Occured in Parse HTML template [Create Post] : ")
+		fmt.Println(terr.Error())
+		c.String(200, "<p> Unable to Display Post </p>")
+		return
+	}
+
+	tmplt.ExecuteTemplate(c.Writer, "commentsComponent", commentData)
+	return
 }

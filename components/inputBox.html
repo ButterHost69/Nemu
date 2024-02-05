@@ -1,0 +1,10 @@
+
+
+{{ define "inputCommentBox" }}
+<form id="postInputBox" hx-post="/app/comment/{{ .ObjectID }}" hx-target="#comments_{{ .ObjectID }}" hx-swap="afterbegin"
+      class="pt-2 pb-2 bg-sky-50 fixed bottom-0 w-5/6 flex items-center justify-center space-x-10 mb-4 ">
+      <p class="font-bold bg-slate-50">Replying<br/> ~ {{ .OPUsername }} </p>
+      <textarea name="post-content" class="border-2  border-blue-400 p-2 w-3/4 resize-none" rows="2" placeholder="Type your Comment here..."></textarea>
+      <input class="h-14 w-14  rounded-full border-2 bg-fuchsia-100" type="submit" value="➕">
+</form>
+{{ end }}

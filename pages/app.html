@@ -39,6 +39,7 @@
         <div id="posts-screen" class="flex flex-col flex-grow overflow-y-auto border-2 pt-4">
             <!-- Repeat the following div 20 times -->
             <!-- Example Post -->
+<!--             
             <div 
             class="flex flex-col border-2 ml-12 mr-12 mt-2 mb-2 p-4 bg-zinc-100">
                 <p>
@@ -54,7 +55,7 @@
                         ➕ Comment
                     </button>
                 </div>
-            </div>
+            </div> -->
                 
             
             <div hx-get="/app/posts/0"
@@ -67,7 +68,7 @@
 
             <div class="m-32"></div>
 
-            <form hx-post="/app/post" hx-target="#posts-screen" hx-swap="afterbegin"
+            <form id="postInputBox" hx-post="/app/post" hx-target="#posts-screen" hx-swap="afterbegin"
                   class="fixed bottom-0 w-5/6 flex items-center justify-center space-x-10 mb-4 ">
                     <textarea name="post-content" class="border-2  p-2 w-3/4 resize-none" rows="2" placeholder="Your text here"></textarea>
                     <input class="h-14 w-14  rounded-full border-2 bg-fuchsia-100" type="submit" value="➕">

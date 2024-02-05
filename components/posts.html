@@ -5,13 +5,15 @@
         <p>
             {{ .Data }}
         </p>
-        <div class="w-full flex mt-3">
+        <div class="flex-none items-center w-full flex mt-3">
             <p>
-                ~ {{ .Username }}  |  {{ if .CreatedAt }}  <p class="text-gray-400 ml-2"> {{ .CreatedAt }} </p>{{ end }}
+                ~ {{ .Username }}  |  {{ if .CreatedAt }}  <p class="text-gray-400 text-sm ml-2"> {{ .CreatedAt }} </p>{{ end }}
             </p>
             <div class="grow"></div>
-            <button hx-get="/widgets/commentInputBox"
-            class="border-2 pt-1 pb-1 pl-3 pr-3">
+            <button hx-get="/app/components/commentBox/{{ .ObjectID }}"
+                hx-target="#postInputBox"
+                hx-swap="outerHTML"
+                class="border-2 pt-1 pb-1 pl-3 pr-3">
                 ➕ Comment
             </button>
 
@@ -20,9 +22,11 @@
         </div>
     </div>
     
-    {{ range .Comments }}
-        {{ template "commentsComponent" }}
-    {{ end }}
+    <div id="comments_{{ .ObjectID }}">
+        {{ range .Comments }}
+            {{ template "commentsComponent" }}
+        {{ end }}
+    </div>
 
 </div>
 {{ end }}

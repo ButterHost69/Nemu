@@ -4,6 +4,7 @@ import (
 	"context"
 	"example/one-page/server/models"
 	"fmt"
+	// "reflect"
 	"strconv"
 	"time"
 
@@ -41,6 +42,36 @@ func InsertPostInMongoDB(collection *mongo.Collection, username string, content 
 		return ierr
 	}
 
+	return nil
+}
+
+func InsertCommentInMongoDB(collection *mongo.Collection, postObjId string, username string, commentContent string) error{
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	createdAt := time.Now()
+
+	objectID, err := primitive.ObjectIDFromHex(postObjId)
+	if err != nil {
+		fmt.Println(" > Error in Convertin string to primitive.ObjectID ")
+		fmt.Println(err.Error())
+		return err
+	}
+	filter := bson.D{{Key: "_id", Value: objectID}}
+	newComment := bson.D{
+		{Key: "commentUsername", Value: username},
+		{Key: "commmentContent", Value: commentContent},
+		{Key: "commentCreatedAt", Value: createdAt},
+	}
+
+	update := bson.D{{Key: "$push", Value: bson.D{{ Key: "comments", Value: newComment }}}}
+	_, eerr := collection.UpdateOne(ctx, filter, update)
+	if eerr != nil {
+    	fmt.Println(" > Error Occured in Executing the MongoDB code : ")
+		fmt.Println(eerr.Error())
+		return eerr
+	}
 	return nil
 }
 
@@ -87,7 +118,12 @@ func GetPostsFromMongoDB(collection *mongo.Collection, offset int, limit int) ([
 				year, month, day := (elem.Value.(primitive.DateTime)).Time().Date()
 				date := strconv.Itoa(day) + "." + strconv.Itoa(int(month)) + "." + strconv.Itoa(year)
 				post.CreatedAt = date
-				fmt.Println(date)
+				// fmt.Println(date)
+			} else if elem.Key == "_id" {
+				id := elem.Value.(primitive.ObjectID).Hex()
+				post.ObjectID = id
+				// fmt.Println(id, " - ", reflect.TypeOf(id))
+				// fmt.Println("Object ID : ", id.(primitive.ObjectID).Hex())
 			}
 		}
 
@@ -105,4 +141,41 @@ func GetPostsFromMongoDB(collection *mongo.Collection, offset int, limit int) ([
 	}
 
 	return resultSet, emptyList
+}
+
+func GetUsernameThroughObjectID(collection *mongo.Collection, objectHexID string) string {
+	objID, err := primitive.ObjectIDFromHex(objectHexID)
+	if err != nil {
+		fmt.Println(err.Error())
+		return ""
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	curr, cerr := collection.Find(ctx, bson.D{{Key: "_id", Value: objID}})
+	if cerr != nil {
+		fmt.Println(" Error Occured at Getting Cursor [GetUsernameThroughObjectID] : ")
+		fmt.Println(err.Error())
+		return ""
+	}
+	defer curr.Close(ctx)
+
+	for curr.Next(ctx) {
+		var result bson.D
+
+		derr := curr.Decode(&result)
+		if derr != nil {
+			fmt.Println(" Error Occured in Accessing Cursor : ")
+			fmt.Println(derr.Error())
+		}
+
+		for _, elem := range result {
+			if elem.Key == "username" {
+				return elem.Value.(string)
+			}
+		}
+	}
+
+	return ""
 }

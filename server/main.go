@@ -75,8 +75,17 @@ func main() {
 		handler.PostAppPost(ctx, mdb, db)
 	})
 
+	r.POST("/app/comment/:postId", func(ctx *gin.Context) {
+		handler.PostComment(ctx, mdb, db)
+	})
+
 	r.GET("/app/posts/:page", func(ctx *gin.Context) {
 		handler.LoadPages(ctx, mdb)
+	})
+
+	r.GET("/app/components/commentBox/:postID", func(ctx *gin.Context) {
+		// ctx.String(200,"Pressed")
+		handler.GetCommentInputBox(ctx, mdb)
 	})
 
 	r.Run("localhost:8000")
