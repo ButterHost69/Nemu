@@ -10,28 +10,27 @@ type Comment struct {
 }
 
 type Post struct {
-	ObjectID 	string
-	Username 	string
-	Data     	string
-	Category	string
+	ObjectID string
+	Username string
+	Data     string
+	Category string
 
 	CreatedAt string
 	Comments  []Comment
 }
 
 type BsonComment struct {
-	CommentUsername 	string 				`bson:"commentUsername"`
-	CommentContent     	string 				`bson:"commmentContent"` // Adjusted to match your BSON field name
-	CreatedAt 			primitive.DateTime  `bson:"createdAt"`
-
+	CommentUsername string             `bson:"commentUsername"`
+	CommentContent  string             `bson:"commmentContent"` // Adjusted to match your BSON field name
+	CreatedAt       primitive.DateTime `bson:"createdAt"`
 }
 
 type BsonPost struct {
-	ObjectID  primitive.ObjectID 	`bson:"_id"`
-	Username  string             	`bson:"username"`
-	Data      string             	`bson:"content"`
-	
+	ObjectID primitive.ObjectID `bson:"_id"`
+	Username string             `bson:"username"`
+	Data     string             `bson:"content"`
+	Category string             `bson:"category"`
 
-	CreatedAt primitive.DateTime    `bson:"createdAt"`
-	Comments  []BsonComment         `bson:"comments"`
+	CreatedAt primitive.DateTime `bson:"createdAt"`
+	Comments  []BsonComment      `bson:"comments"`
 }

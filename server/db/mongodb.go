@@ -247,7 +247,7 @@ func BetterGetPostsFromMongoDB(collection *mongo.Collection, offset int, limit i
 		post.ObjectID = bsonpost.ObjectID.Hex()
 		post.Username = bsonpost.Username
 		post.Data = bsonpost.Data
-
+		post.Category = bsonpost.Category
 		// Convert createdAt to a string format
 		post.CreatedAt = formatDateTime(bsonpost.CreatedAt)
 
