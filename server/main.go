@@ -96,5 +96,9 @@ func main() {
 		handler.PostCreateCategoryPost(ctx, mdb, db)
 	})
 
+	r.GET("/app/:category/posts/:page", func(ctx *gin.Context) {
+		handler.LoadCategoryPages(ctx, mdb)
+	})
+
 	r.Run("localhost:8000")
 }

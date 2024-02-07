@@ -7,7 +7,7 @@
         </p>
         <div class="flex-none items-center w-full flex mt-3">
             <p>
-                ~ {{ .Username }}  |  {{ if .CreatedAt }}  <p class="text-gray-400 text-sm ml-2"> {{ .CreatedAt }} </p>{{ end }}
+                ~ {{ .Username }}  |  {{ if .CreatedAt }}  <p class="text-gray-400 text-sm ml-2"> {{ .CreatedAt }} </p> {{ end }}  
             </p>
             <div class="grow"></div>
             <button hx-get="/app/components/commentBox/{{ .ObjectID }}"

@@ -151,6 +151,16 @@ func GetPosts(mdb *mongo.Client, pageNumber int) ([]models.Post, bool){
 
 }
 
+func GetCategoryPosts (mdb *mongo.Client, pageNumber int, category string) ([]models.Post, bool){
+
+	postsCollection := mdb.Database("nemu").Collection("posts")
+	
+
+	// This func Returns models.Post[]
+	return database.BetterGetCategoryPostsFromMongoDB(postsCollection, pageNumber*10, 10, category)
+
+}
+
 func GetUsernameThroughObjectID(mdb *mongo.Client, objId string) (string) {
 	postsCollection := mdb.Database("nemu").Collection("posts")
 

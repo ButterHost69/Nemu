@@ -323,3 +323,41 @@ func PostCreateCategoryPost(c *gin.Context, mdb *mongo.Client, db *sql.DB){
 	tmplt.ExecuteTemplate(c.Writer, "postsComponent", currPost)
 	return
 }
+
+func LoadCategoryPages(c *gin.Context, mdb *mongo.Client) {
+	strpageNumber := c.Param("page")
+	category := c.Param("category")
+
+	pageNumber, err := strconv.Atoi(strpageNumber)
+	if err != nil {
+		// Handle the error if the conversion fails
+		c.String(200, "Invalid ID")
+		return
+	}
+
+	posts, ifEmptyPost := posts.GetCategoryPosts(mdb, pageNumber, category)
+
+	type PageData struct {
+		PageNumber int
+		PostsSet   []models.Post
+		EmptyPost  bool
+		Category   string
+	}
+
+	tmpl, tempErr := template.ParseFiles("components/categoryLoadPost.html", "components/posts.html", "components/comments.html")
+	if tempErr != nil {
+		fmt.Println("Error executing Parsing Templates : ", err.Error())
+		// return
+	}
+
+	data := PageData{
+		PageNumber: pageNumber + 1,
+		PostsSet:   posts,
+		EmptyPost:  ifEmptyPost,
+	}
+	if err := tmpl.ExecuteTemplate(c.Writer, "categoryLoadPosts", data); err != nil {
+		// Handle the error, maybe log it or return an error response.
+		fmt.Println("Error executing template:", err.Error())
+		return
+	}
+}

@@ -10,9 +10,10 @@ type Comment struct {
 }
 
 type Post struct {
-	ObjectID string
-	Username string
-	Data     string
+	ObjectID 	string
+	Username 	string
+	Data     	string
+	Category	string
 
 	CreatedAt string
 	Comments  []Comment
@@ -29,6 +30,8 @@ type BsonPost struct {
 	ObjectID  primitive.ObjectID 	`bson:"_id"`
 	Username  string             	`bson:"username"`
 	Data      string             	`bson:"content"`
+	
+
 	CreatedAt primitive.DateTime    `bson:"createdAt"`
 	Comments  []BsonComment         `bson:"comments"`
 }

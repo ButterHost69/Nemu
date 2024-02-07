@@ -1,0 +1,16 @@
+{{ define "categoryLoadPosts" }}
+    {{ range .PostsSet }}
+        {{ template "postsComponent" . }}
+    {{ end }}
+    
+    {{ if .EmptyPost }}
+        <div></div>
+    {{ else }}
+        <div hx-get="/app/{{ .Category }}/posts/{{ .PageNumber }}"
+        hx-trigger="intersect once"
+        hx-swap="afterend"
+        hx-target="this"
+        ></div>
+    {{ end }}
+
+{{ end }}

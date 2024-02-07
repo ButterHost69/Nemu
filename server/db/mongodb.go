@@ -51,9 +51,9 @@ func InsertCategoryPostInMongoDB(collection *mongo.Collection, username string, 
 
 	createdAt := time.Now()
 	_, ierr := collection.InsertOne(ctx, bson.D{
-		{Key: "username", Value: username}, 
-		{Key: "content", Value: content}, 
-		{Key: "category", Value: category}, 
+		{Key: "username", Value: username},
+		{Key: "content", Value: content},
+		{Key: "category", Value: category},
 		{Key: "createdAt", Value: createdAt},
 	})
 
@@ -228,6 +228,70 @@ func BetterGetPostsFromMongoDB(collection *mongo.Collection, offset int, limit i
 	findOptions.SetLimit(int64(limit))
 
 	cursor, err := collection.Find(ctx, bson.D{}, findOptions)
+	if err != nil {
+		fmt.Println("Error Occured at Getting Cursor [GetPostsFromMongoDB]:", err.Error())
+		return nil, false
+	}
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		var bsonpost models.BsonPost
+		var post models.Post
+
+		if err := cursor.Decode(&bsonpost); err != nil {
+			fmt.Println("Error Occured in Accessing Cursor:", err)
+			continue
+		}
+
+		// Convert ObjectID to Hex string
+		post.ObjectID = bsonpost.ObjectID.Hex()
+		post.Username = bsonpost.Username
+		post.Data = bsonpost.Data
+
+		// Convert createdAt to a string format
+		post.CreatedAt = formatDateTime(bsonpost.CreatedAt)
+
+		if len(bsonpost.Comments) > 0 {
+			// Convert each comment's createdAt to a string format
+			var totalComments []models.Comment
+			for _, comment := range bsonpost.Comments {
+				var currComment models.Comment
+
+				currComment.CommentData = comment.CommentContent
+				currComment.CommentUsername = comment.CommentUsername
+				currComment.CreatedAt = formatDateTime(bsonpost.CreatedAt)
+
+				// fmt.Println(comment.CommentContent, " > ", currComment.CommentData)
+				totalComments = append(totalComments, currComment)
+			}
+			post.Comments = totalComments
+		}
+
+		resultSet = append(resultSet, post)
+	}
+
+	if err := cursor.Err(); err != nil {
+		fmt.Println("Error Occured at cursor:", err.Error())
+		return nil, false
+	}
+
+	return resultSet, len(resultSet) == 0
+}
+
+func BetterGetCategoryPostsFromMongoDB(collection *mongo.Collection, offset int, limit int, category string) ([]models.Post, bool) {
+	// var posts []models.BsonPost
+	var resultSet []models.Post
+
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{Key: "createdAt", Value: -1}})
+	findOptions.SetSkip(int64(offset))
+	findOptions.SetLimit(int64(limit))
+
+	filter := bson.D{{Key:"category", Value:category}}
+	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
 		fmt.Println("Error Occured at Getting Cursor [GetPostsFromMongoDB]:", err.Error())
 		return nil, false
