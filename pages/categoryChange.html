@@ -1,0 +1,59 @@
+{{ define "categoryChange" }}
+    <div id="posts-screen" class="flex flex-col flex-grow overflow-y-auto border-2 pt-4">
+        hello You are in {{ .Category }} category
+
+        <div hx-get="/app/{{ .Category }}/posts/0"
+        hx-trigger="revealed"
+        hx-swap="afterend"
+        hx-target="this"
+        ></div>
+
+        <div class="m-32"></div>
+
+        <form id="postInputBox" hx-post="/app/{{ .Category }}/post" hx-target="#posts-screen" hx-swap="afterbegin"
+          class="fixed bottom-0 w-5/6 flex items-center justify-center space-x-10 mb-4 ">
+                <textarea name="post-content" class="border-2  p-2 w-3/4 resize-none" rows="2" placeholder="{{ .Category }} : Your text here"></textarea>
+                <input class="h-14 w-14  rounded-full border-2 bg-fuchsia-100" type="submit" value="➕">
+    </form>
+    </div> 
+
+    <ul id="category" class="flex-none w-1/6 list-none p-0 m-0 space-y-5 pt-12 font-bold font-mono h-full border-2 flex flex-col items-center">
+        <li 
+            class='flex justify-center cursor-pointer w-full {{ if eq .Category "all" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+            hx-get="/app/categories/all" 
+            hx-swap="multi:#posts-screen:outerHTML,#postInputBox:outerHTML,#category:outerHTML" 
+            hx-trigger="click"> All </li>
+        <li 
+            class='flex justify-center cursor-pointer w-full {{ if eq .Category "random" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+            hx-get="/app/categories/random" 
+            hx-swap="multi:#posts-screen:outerHTML,#postInputBox:outerHTML,#category:outerHTML" 
+            hx-trigger="click"> Random </li>
+        <li 
+            class='flex justify-center cursor-pointer w-full {{ if eq .Category "philosophy" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+            hx-get="/app/categories/philosophy" 
+            hx-swap="multi:#posts-screen:outerHTML,#postInputBox:outerHTML,#category:outerHTML" 
+            hx-trigger="click"> Philosophy </li>
+        <li 
+            class='flex justify-center cursor-pointer w-full {{ if eq .Category "technology" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+            hx-get="/app/categories/technology" 
+            hx-swap="multi:#posts-screen:outerHTML,#postInputBox:outerHTML,#category:outerHTML" 
+            hx-trigger="click"> Technology </li>
+        <li 
+            class='flex justify-center cursor-pointer w-full {{ if eq .Category "politics" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+            hx-get="/app/categories/politics" 
+            hx-swap="multi:#posts-screen:outerHTML,#postInputBox:outerHTML,#category:outerHTML" 
+            hx-trigger="click"> Politics </li>
+        <li 
+            class='flex justify-center cursor-pointer w-full {{ if eq .Category "weapons" }} bg-blue-200  pt-2 pb-2 {{ end }}"' 
+            hx-get="/app/categories/weapons" 
+            hx-swap="multi:#posts-screen:outerHTML,#postInputBox:outerHTML,#category:outerHTML" 
+            hx-trigger="click"> Weapons </li>
+        <li 
+            class='flex justify-center cursor-pointer w-full {{ if eq .Category "torrents" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+            hx-get="/app/categories/torrents"
+            hx-swap="multi:#posts-screen:outerHTML,#postInputBox:outerHTML,#category:outerHTML" 
+            hx-trigger="click"> Torrents </li>
+    </ul>
+
+    
+{{ end }}

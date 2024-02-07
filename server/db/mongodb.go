@@ -45,6 +45,25 @@ func InsertPostInMongoDB(collection *mongo.Collection, username string, content 
 	return nil
 }
 
+func InsertCategoryPostInMongoDB(collection *mongo.Collection, username string, content string, category string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	createdAt := time.Now()
+	_, ierr := collection.InsertOne(ctx, bson.D{
+		{Key: "username", Value: username}, 
+		{Key: "content", Value: content}, 
+		{Key: "category", Value: category}, 
+		{Key: "createdAt", Value: createdAt},
+	})
+
+	if ierr != nil {
+		return ierr
+	}
+
+	return nil
+}
+
 func InsertCommentInMongoDB(collection *mongo.Collection, postObjId string, username string, commentContent string) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

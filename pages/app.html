@@ -1,9 +1,11 @@
 <!-- <script src="https://cdn.tailwindcss.com"></script> -->
 
-<script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
 <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
+<script src="https://unpkg.com/htmx.org/dist/ext/multi-swap.js"></script>
 
-<div class="h-screen flex flex-col items-center" id="mainScreen">
+
+<div class="h-screen flex flex-col items-center" id="mainScreen" hx-boost="true">
     <div class="fixed flex flex-row w-screen h-16 items-center border-2">
         <!-- Header content -->
         <div class="flex flex-row ml-20">
@@ -26,15 +28,45 @@
     
     <div class="flex flex-row w-full h-full  pt-16"> <!-- Adjusted width and height, added padding top -->
         <!-- Sidebar -->
-        <ul class="flex-none w-1/6 list-none p-0 m-0 space-y-5 pt-12 font-bold font-mono h-full border-2 flex flex-col items-center">
-            <li> Random </li>
-            <li> Anime </li>
-            <li> Technology </li>
-            <li> Sports </li>
-            <li> Video Games </li>
-            <li> Philosophy </li>
+        <ul id="category" class="flex-none w-1/6 list-none p-0 m-0 space-y-5 pt-12 font-bold font-mono h-full border-2 flex flex-col items-center">
+                           
+            <li class='flex justify-center cursor-pointer w-full {{ if eq .Category "all" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+                hx-swap="multi:#posts-screen:outerHTML,#category:outerHTML" 
+                hx-get="/app/categories/all" 
+                hx-trigger="click"> All </li>
+            
+            <li class='flex justify-center cursor-pointer w-full {{ if eq .Category "random" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+                hx-get="/app/categories/random" 
+                hx-swap="multi:#posts-screen:outerHTML,#category:outerHTML" 
+                hx-trigger="click"> Random </li>
+            
+            <li class='flex justify-center cursor-pointer w-full {{ if eq .Category "philosophy" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+                hx-get="/app/categories/philosophy" 
+                hx-swap="multi:#posts-screen:outerHTML,#category:outerHTML" 
+                hx-trigger="click"> Philosophy </li>
+            
+            <li class='flex justify-center cursor-pointer w-full {{ if eq .Category "technology" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+                hx-get="/app/categories/technology" 
+                hx-swap="multi:#posts-screen:outerHTML,#category:outerHTML" 
+                hx-trigger="click"> Technology </li>
+            
+            <li class='flex justify-center cursor-pointer w-full {{ if eq .Category "politics" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+                hx-get="/app/categories/politics" 
+                hx-swap="multi:#posts-screen:outerHTML,#category:outerHTML" 
+                hx-trigger="click"> Politics </li>
+            
+            <li class='flex justify-center cursor-pointer w-full {{ if eq .Category "weapons" }} bg-blue-200  pt-2 pb-2 {{ end }}"' 
+                hx-get="/app/categories/weapons" 
+                hx-swap="multi:#posts-screen:outerHTML,#category:outerHTML" 
+                hx-trigger="click"> Weapons </li>
+            
+            <li class='flex justify-center cursor-pointer w-full {{ if eq .Category "torrents" }} bg-blue-200 pt-2 pb-2 {{ end }}"' 
+                hx-get="/app/categories/torrents" 
+                hx-swap="multi:#posts-screen:outerHTML,#category:outerHTML" 
+                hx-trigger="click"> Torrents </li>
+            
         </ul>
-
+        
         <!-- Content Area -->
         <div id="posts-screen" class="flex flex-col flex-grow overflow-y-auto border-2 pt-4">
             <!-- Repeat the following div 20 times -->

@@ -88,5 +88,13 @@ func main() {
 		handler.GetCommentInputBox(ctx, mdb)
 	})
 
+	r.GET("/app/categories/:category", func(ctx *gin.Context) {
+		handler.GetCategoryPage(ctx)
+	})
+
+	r.POST("/app/:category/post", func(ctx *gin.Context) {
+		handler.PostCreateCategoryPost(ctx, mdb, db)
+	})
+
 	r.Run("localhost:8000")
 }

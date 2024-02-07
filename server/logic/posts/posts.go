@@ -60,6 +60,50 @@ func CreatePost(mdb *mongo.Client, db *sql.DB, user_token string, content string
 	return currPost, nil
 }
 
+func CreateCategoryPost(mdb *mongo.Client, db *sql.DB, user_token string, content string, category string) (models.Post, error){
+	postCollection := mdb.Database("nemu").Collection("posts")
+
+	emptyPost := models.Post{
+		Username: "",
+		Data: "",
+		CreatedAt: "",
+	}
+
+	
+	username, derr := sessions.GetUsernameFromSessionToken(db, user_token)
+	if derr != nil {
+		fmt.Println("Error Occured in Getting Username From Session [Create Post] : ")
+		fmt.Println(derr.Error())
+		
+		return emptyPost, derr
+	}
+
+	merr := database.InsertCategoryPostInMongoDB(postCollection, username, content, category)
+	if merr != nil {
+		fmt.Println("Error Occured in Inserting Post in DB [Create Post] : ")
+		fmt.Println(merr.Error())
+		
+		return emptyPost, merr
+	}
+
+	year, month, day := time.Now().Date()
+	date := strconv.Itoa(day) + "." + strconv.Itoa(int(month)) + "." + strconv.Itoa(year)
+	currPost := models.Post{
+		Username: username,
+		Data:     content,
+		CreatedAt: date,
+		// Temp Delete Later :
+		// Comments: []Comment{
+		// 	{
+		// 		CommentData : "Comment - 1",
+		// 		CommentUsername : "Well Well",
+		// 	},
+		// },
+	}
+
+	return currPost, nil
+}
+
 func CreateComment(mdb *mongo.Client, db *sql.DB, user_token string, postObjId string, commentContent string) (models.Comment, error) {
 	postCollection := mdb.Database("nemu").Collection("posts")
 

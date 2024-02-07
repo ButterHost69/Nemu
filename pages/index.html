@@ -8,10 +8,11 @@
 
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/multi-swap.js"></script>
 
     <title> Nemu </title>
 </head>
-<body id="#body" hx-ext="response-targets">
+<body id="#body" hx-boost="true" hx-ext="response-targets, multi-swap">
     <div id="mainDiv"
          class="h-screen w-screen"
          hx-get="/app"
