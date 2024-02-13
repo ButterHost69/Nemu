@@ -1,3 +1,6 @@
+1. Comment Box not comming in category after posting [ make it reoccur ]
+2. Comment Box not comming in category after posting [ Solve it ]
+3. Refactor mongodb.go ~ loadpost
 5. Learn Mongo
 
 6. Responsive Ui || Maybe support Mobile    
