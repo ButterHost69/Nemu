@@ -23,6 +23,7 @@ func CreatePost(mdb *mongo.Client, db *sql.DB, user_token string, content string
 		Username: "",
 		Data: "",
 		CreatedAt: "",
+		ObjectID: "",
 	}
 
 	
@@ -34,7 +35,7 @@ func CreatePost(mdb *mongo.Client, db *sql.DB, user_token string, content string
 		return emptyPost, derr
 	}
 
-	merr := database.InsertPostInMongoDB(postCollection, username, content)
+	Oid, merr := database.InsertPostInMongoDB(postCollection, username, content)
 	if merr != nil {
 		fmt.Println("Error Occured in Inserting Post in DB [Create Post] : ")
 		fmt.Println(merr.Error())
@@ -48,6 +49,7 @@ func CreatePost(mdb *mongo.Client, db *sql.DB, user_token string, content string
 		Username: username,
 		Data:     content,
 		CreatedAt: date,
+		ObjectID: Oid,
 		// Temp Delete Later :
 		// Comments: []Comment{
 		// 	{

@@ -2,8 +2,10 @@ package db
 
 import (
 	"context"
+	"errors"
 	"example/one-page/server/models"
 	"fmt"
+
 	// "reflect"
 	"strconv"
 	"time"
@@ -32,17 +34,24 @@ func InitMongoDB() (*mongo.Client, error) {
 	return mdb, nil
 }
 
-func InsertPostInMongoDB(collection *mongo.Collection, username string, content string) error {
+func InsertPostInMongoDB(collection *mongo.Collection, username string, content string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	createdAt := time.Now()
-	_, ierr := collection.InsertOne(ctx, bson.D{{Key: "username", Value: username}, {Key: "content", Value: content}, {Key: "createdAt", Value: createdAt}})
+	result , ierr := collection.InsertOne(ctx, bson.D{{Key: "username", Value: username}, {Key: "content", Value: content}, {Key: "createdAt", Value: createdAt}})
 	if ierr != nil {
-		return ierr
+		return "", ierr
 	}
 
-	return nil
+	oid, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
+		return "", errors.New("> Error in Converting Object Id to JSON")
+	}
+
+	Oid := oid.Hex()
+	
+	return Oid, nil
 }
 
 func InsertCategoryPostInMongoDB(collection *mongo.Collection, username string, content string, category string) error {
