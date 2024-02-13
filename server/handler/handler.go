@@ -15,6 +15,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+var domain string = "localhost"
+
 func DefaultRoute(c *gin.Context) {
 	tmpl := template.Must(template.ParseFiles("pages/index.html"))
 	tmpl.Execute(c.Writer, nil)
@@ -90,7 +92,7 @@ func PostLogin(c *gin.Context, db *sql.DB) {
 	}
 
 	if ifAuth == true {
-		c.SetCookie("user-token", newSessionToken, 3600, "/", "localhost", false, true)
+		c.SetCookie("user-token", newSessionToken, 3600, "/", domain, false, true)
 		// c.SetCookie("user-token",username,3600,"/","localhost",false,true)
 
 		fmt.Println("Cookie Set", newSessionToken)
@@ -287,7 +289,7 @@ func GetCategoryPage(c *gin.Context) {
 	}
 }
 
-func PostCreateCategoryPost(c *gin.Context, mdb *mongo.Client, db *sql.DB){
+func PostCreateCategoryPost(c *gin.Context, mdb *mongo.Client, db *sql.DB) {
 	category := c.Param("category")
 	fmt.Println(" > Catgory : ", category)
 
